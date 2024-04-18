@@ -23,6 +23,26 @@
 
 ## [使用方法](https://qliangw.notion.site/emby_notify-898e4531fa314a9bbc15613778b116f6)
 
+新增环境变量：`WECHAT_PROXY`，可以使用[ddsderek/wxchat](https://hub.docker.com/r/ddsderek/wxchat)镜像在固定公网IP的服务器上搭建反代链接
+```bash
+version: '3.3'
+services:
+    wxchat:
+        container_name: wxchat
+        restart: always
+        ports:
+            - '3000:80'
+        image: 'ddsderek/wxchat:latest'
+```
+```bash
+docker run -d \
+    --name wxchat \
+    --restart=always \
+    -p 3000:80 \
+    ddsderek/wxchat:latest
+```
+搭建完成后，在防火墙中放行3000端口，并修改`WECHAT_PROXY`为 http://你的服务器ip/域名:3000
+以及在企业微信中添加企业可信IP，详细介绍可见[企业微信推送](https://pt-helper.notion.site/50a7b44e255d40109bd7ad474abfeba5)
 
 ### 播放电影填写示例
 
