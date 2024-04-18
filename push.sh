@@ -24,7 +24,10 @@ BARK_DIGE=$(echo $(urlencode ${DIGE}))
 
 function qywx()
 {
-    RET=$("${TOOLS_DIR}"/curl -s https://qyapi.weixin.qq.com/cgi-bin/gettoken?"corpid="${CORPID}"&corpsecret="${CORP_SECRET}"")
+
+    # RET=$("${TOOLS_DIR}"/curl -s https://qyapi.weixin.qq.com/cgi-bin/gettoken?"corpid="${CORPID}"&corpsecret="${CORP_SECRET}"")
+    WECHAT_URL="${WECHAT_PROXY}/cgi-bin/gettoken?corpid=${CORPID}&corpsecret=${CORP_SECRET}"
+    RET=$("${TOOLS_DIR}"/curl -s "${WECHAT_URL}")
     KEY=$(echo ${RET} | "${TOOLS_DIR}"/jq -r .access_token)
 
     
@@ -49,7 +52,9 @@ function qywx()
 }
 EOF
 
-    "${TOOLS_DIR}"/curl -d @tmp_qywx -XPOST https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token="${KEY}"
+    # "${TOOLS_DIR}"/curl -d @tmp_qywx -XPOST https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token="${KEY}"
+    NOTIFY_URL="${WECHAT_PROXY}/cgi-bin/message/send?access_token=${KEY}"
+    "${TOOLS_DIR}"/curl -d @tmp_qywx -XPOST "${NOTIFY_URL}"
     echo ""
     echo "删除临时文件"
     rm ${BASE_ROOT}/tmp_qywx
