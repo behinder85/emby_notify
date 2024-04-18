@@ -96,8 +96,9 @@ def getqywechatrobotmessage(subject, body):
     return json_text
     
 # 此函数用户获取企业微信的token
-def getqywechatapptoken(corpid,secret):
-    resp = request.urlopen("https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=" + corpid + "&corpsecret=" + secret)
+def getqywechatapptoken(wechat_proxy,corpid,secret):
+    # resp = request.urlopen("https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=" + corpid + "&corpsecret=" + secret)
+    resp = request.urlopen(f"{wechat_proxy}/cgi-bin/gettoken?corpid={corpid}&corpsecret={secret}")
     json_resp = json.loads(resp.read().decode())
     token = json_resp["access_token"]
     return token
@@ -201,6 +202,8 @@ qywechatroboturl = ""
 
 # 参数配置 - 如果使用企业微信(qywechat)应用消息, 则qywechatapp参数配置为True, 否则配置False
 qywechatapp = False
+# 如果使用企业微信代理，把反代链接填在这里，否则无需理会
+qywechatproxy = ""
 # 如果使用企业微信(qywechat)应用消息, 把你的企业ID填在这里, 否则无需理会
 qywechatappcorpid = ""
 # 如果使用企业微信(qywechat)应用消息, 把你的应用Secret填在这里, 否则无需理会
@@ -281,9 +284,10 @@ if qywechatapp:
         "Content-Type": "application/json;charset=UTF-8"
     }
     # 获取token
-    qywechatapptoken = getqywechatapptoken(qywechatappcorpid, qywechatappsecret)
+    qywechatapptoken = getqywechatapptoken(qywechatproxy, qywechatappcorpid, qywechatappsecret)
     # 格式化url
-    qywechatappurl = "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=" + qywechatapptoken
+    # qywechatappurl = "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=" + qywechatapptoken
+    qywechatappurl = f"{qywechatproxy}/cgi-bin/message/send?access_token={qywechatapptoken}"
 
 # 初始化feishu相关参数
 if feishu:
